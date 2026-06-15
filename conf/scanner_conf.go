@@ -1,0 +1,48 @@
+/*
+Copyright 2026 Ckyn Authors .
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package conf
+
+import "time"
+
+// TCP port scanner
+type TCPScannerConfS struct {
+	Timeout     time.Duration
+	MaxParallel int64
+	PortList    map[string]string
+}
+
+var TCPScannerConf = TCPScannerConfS{
+	Timeout:     500 * time.Millisecond,
+	MaxParallel: 50,
+	PortList: map[string]string{
+		"ssh":                 "22",
+		"http":                "80",
+		"https":               "443",
+		"docker-api":          "2375",
+		"etcd":                "2379",
+		"cAdvisor":            "4194",
+		"k8s-api-server":      "6443",
+		"kubectl-proxy":       "8001",
+		"http-1":              "8080",
+		"https-1":             "8443",
+		"kubelet-auth":        "10250",
+		"kubelet-read":        "10255",
+		"dashboard":           "30000",
+		"nodeport-service":    "30001-32767", //default NodePort service port range：30000-32767。
+		"tiller,weave,calico": "44134",
+	},
+}
