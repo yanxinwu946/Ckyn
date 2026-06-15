@@ -66,20 +66,10 @@ func TestParseCkynMain(t *testing.T) {
 			args:       []string{"./ckyn_cli_path", "eva"},
 			successStr: "current user",
 		},
-		// {
-		// 	name:       "./ckyn eva --profile=additional",
-		// 	args:       []string{"./ckyn_cli_path", "eva", "--profile=additional"},
-		// 	successStr: "randomize_va_space",
-		// },
 		{
 			name:       "./ckyn run test-poc",
 			args:       []string{"./ckyn_cli_path", "run", "test-poc"},
 			successStr: "run success",
-		},
-		{
-			name:       "./ckyn ifconfig",
-			args:       []string{"./ckyn_cli_path", "ifconfig"},
-			successStr: "GetLocalAddresses",
 		},
 	}
 

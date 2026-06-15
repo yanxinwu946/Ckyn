@@ -18,23 +18,18 @@ package cli
 
 import (
 	"fmt"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/netstat"
 
 	"github.com/Yanxinwu946/Ckyn/pkg/evaluate"
 	"github.com/Yanxinwu946/Ckyn/pkg/plugin"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/dockerd_api"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/etcdctl"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/kubectl"
+	"github.com/Yanxinwu946/Ckyn/pkg/tool/probe"
 
 	"log"
 	"os"
 	"strconv"
 
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/netcat"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/network"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/probe"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/ps"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/vi"
 	"github.com/docopt/docopt-go"
 )
 
@@ -48,23 +43,8 @@ func ParseCkynMain() bool {
 		docopt.PrintHelpAndExit(nil, BannerContainer)
 	}
 
-	// nc needs -v and -h , parse it outside
-	if os.Args[1] == "nc" {
-		// https://github.com/jiguangin/netcat
-		PassInnerArgs()
-		netcat.RunVendorNetcat()
-		return true
-	}
-
 	// docopt argparse start
 	parseDocopt()
-
-	// delete auto-escape
-
-	// if Args["auto-escape"].(bool) {
-	// 	plugin.RunSingleTask("auto-escape")
-	// 	return true
-	// }
 
 	// support for ckyn eva(Evangelion) and ckyn evaluate
 	fok := Args["evaluate"]
@@ -109,9 +89,6 @@ func ParseCkynMain() bool {
 		args := Args["<args>"].([]string)
 
 		switch Args["<tool>"] {
-		case "vi":
-			PassInnerArgs()
-			vi.RunVendorVi()
 		case "kcurl":
 			kubectl.KubectlToolApi(args)
 		case "ectl":
@@ -120,12 +97,6 @@ func ParseCkynMain() bool {
 			dockerd_api.UcurlToolApi(args)
 		case "dcurl":
 			dockerd_api.DcurlToolApi(args)
-		case "ifconfig":
-			network.GetLocalAddresses()
-		case "ps":
-			ps.RunPs()
-		case "netstat":
-			netstat.RunNetstat()
 		case "probe":
 			if len(args) != 4 {
 				log.Println("Invalid input args.")
