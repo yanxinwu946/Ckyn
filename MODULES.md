@@ -231,11 +231,20 @@
 
 | 工具 | 命令 | 说明 |
 |------|------|------|
+| busybox | `ckyn busybox [<args>...]` | 嵌入的静态 busybox，提供常用 Unix 工具 |
+| busybox | `ckyn busybox --list` | 列出所有可用的 busybox applet |
 | kubectl | `ckyn kcurl <token> (get\|post) <url> [<data>]` | 请求 K8s API Server |
 | etcdctl | `ckyn ectl <endpoint> get <key>` | 枚举 etcd 键 |
 | dockerd_api | `ckyn ucurl (get\|post) <socket> <url> <data>` | 请求 Docker Unix Socket |
 | dockerd_api | `ckyn dcurl (get\|post) <url>` | 请求 Docker TCP API |
 | probe | `ckyn probe <ip> <port> <parallel> <timeout-ms>` | TCP 端口扫描 |
+
+### 嵌入二进制
+
+| 二进制 | 架构 | 来源 | 说明 |
+|--------|------|------|------|
+| busybox | x86_64, 静态链接 | [busybox-static-binaries-fat](https://github.com/shutingrz/busybox-static-binaries-fat) | 提供 400+ Unix 工具 |
+| exploit-passwd | x86_64, 静态链接 | [copy-fail-c](https://github.com/tgies/copy-fail-c/releases) | CVE-2026-31431 提权利用 |
 
 ---
 
@@ -267,7 +276,15 @@
 # 运行 exploit
 ./ckyn run <exploit-name> [<args>...]
 
-# 内置工具
+# Busybox 工具
+./ckyn busybox --help        # 显示帮助
+./ckyn busybox --list        # 列出所有 applet
+./ckyn busybox ls -la        # 运行 ls 命令
+./ckyn busybox ps aux        # 运行 ps 命令
+./ckyn busybox netstat -tlnp # 运行 netstat 命令
+./ckyn busybox wget <url>    # 运行 wget 命令
+
+# K8s/Docker 工具
 ./ckyn kcurl <token> get <url>
 ./ckyn ectl <endpoint> get <key>
 ./ckyn ucurl get <socket> <url>
