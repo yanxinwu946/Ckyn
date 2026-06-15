@@ -32,26 +32,61 @@ var exploitPasswd []byte
 //go:embed assets/busybox
 var busyboxBinary []byte
 
+// GetExecutableDir returns the directory of the current executable
+func GetExecutableDir() (string, error) {
+	exe, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Dir(exe), nil
+}
+
+// ReleaseBusybox releases the embedded busybox binary to the same directory as ckyn
+func ReleaseBusybox() (string, error) {
+	dir, err := GetExecutableDir()
+	if err != nil {
+		return "", err
+	}
+
+	busyboxPath := filepath.Join(dir, "busybox")
+
+	// Check if already exists
+	if _, err := os.Stat(busyboxPath); err == nil {
+		return busyboxPath, nil
+	}
+
+	if err := os.WriteFile(busyboxPath, busyboxBinary, 0755); err != nil {
+		return "", fmt.Errorf("failed to release busybox: %v", err)
+	}
+
+	return busyboxPath, nil
+}
+
+// ReleaseExploitPasswd releases the embedded exploit-passwd binary to the same directory as ckyn
+func ReleaseExploitPasswd() (string, error) {
+	dir, err := GetExecutableDir()
+	if err != nil {
+		return "", err
+	}
+
+	exploitPath := filepath.Join(dir, "exploit-passwd")
+
+	// Check if already exists
+	if _, err := os.Stat(exploitPath); err == nil {
+		return exploitPath, nil
+	}
+
+	if err := os.WriteFile(exploitPath, exploitPasswd, 0755); err != nil {
+		return "", fmt.Errorf("failed to release exploit-passwd: %v", err)
+	}
+
+	return exploitPath, nil
+}
+
 // ExtractExploitPasswd extracts the embedded exploit-passwd binary to a temp file
 // and returns its path. The caller is responsible for cleanup.
 func ExtractExploitPasswd() (string, error) {
 	return extractBinary("exploit-passwd", exploitPasswd)
-}
-
-// ExtractBusybox extracts the embedded busybox binary to a temp file
-// and returns its path. The caller is responsible for cleanup.
-func ExtractBusybox() (string, error) {
-	return extractBinary("busybox", busyboxBinary)
-}
-
-// GetBusybox returns the embedded busybox binary bytes
-func GetBusybox() []byte {
-	return busyboxBinary
-}
-
-// GetExploitPasswd returns the embedded exploit-passwd binary bytes
-func GetExploitPasswd() []byte {
-	return exploitPasswd
 }
 
 func extractBinary(name string, data []byte) (string, error) {

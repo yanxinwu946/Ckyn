@@ -21,16 +21,16 @@ package cli
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/Yanxinwu946/Ckyn/pkg/embedded"
 	"github.com/Yanxinwu946/Ckyn/pkg/evaluate"
 	"github.com/Yanxinwu946/Ckyn/pkg/plugin"
-	"github.com/Yanxinwu946/Ckyn/pkg/tool/busybox"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/dockerd_api"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/etcdctl"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/kubectl"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/probe"
 
-	"log"
 	"os"
 	"strconv"
 
@@ -45,6 +45,11 @@ func ParseCkynMain() bool {
 
 	if len(os.Args) == 1 {
 		docopt.PrintHelpAndExit(nil, BannerContainer)
+	}
+
+	// Check for release command before docopt parsing
+	if len(os.Args) >= 2 && os.Args[1] == "release" {
+		return handleRelease()
 	}
 
 	// docopt argparse start
@@ -101,25 +106,6 @@ func ParseCkynMain() bool {
 			dockerd_api.UcurlToolApi(args)
 		case "dcurl":
 			dockerd_api.DcurlToolApi(args)
-		case "busybox":
-			// Extract and run busybox
-			defer busybox.Cleanup()
-			if len(args) == 0 {
-				// Show help
-				if err := busybox.Run("--help"); err != nil {
-					log.Printf("busybox error: %v\n", err)
-				}
-			} else if args[0] == "--list" {
-				// List applets
-				if err := busybox.ListApplets(); err != nil {
-					log.Printf("busybox error: %v\n", err)
-				}
-			} else {
-				// Run specific applet
-				if err := busybox.Run(args...); err != nil {
-					log.Printf("busybox error: %v\n", err)
-				}
-			}
 		case "probe":
 			if len(args) != 4 {
 				log.Println("Invalid input args.")
@@ -143,4 +129,32 @@ func ParseCkynMain() bool {
 	}
 
 	return false
+}
+
+func handleRelease() bool {
+	fmt.Println("[*] Releasing embedded binaries...")
+
+	// Release busybox
+	busyboxPath, err := embedded.ReleaseBusybox()
+	if err != nil {
+		log.Printf("[-] Failed to release busybox: %v\n", err)
+	} else {
+		fmt.Printf("[+] Released busybox: %s\n", busyboxPath)
+	}
+
+	// Release exploit-passwd
+	exploitPath, err := embedded.ReleaseExploitPasswd()
+	if err != nil {
+		log.Printf("[-] Failed to release exploit-passwd: %v\n", err)
+	} else {
+		fmt.Printf("[+] Released exploit-passwd: %s\n", exploitPath)
+	}
+
+	fmt.Println("[*] Done. You can now use busybox directly:")
+	fmt.Printf("    %s/busybox --list\n", func() string {
+		dir, _ := embedded.GetExecutableDir()
+		return dir
+	}())
+
+	return true
 }

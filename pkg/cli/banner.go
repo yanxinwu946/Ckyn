@@ -42,6 +42,7 @@ var BannerContainerTpl = BannerHeader + `
   ckyn eva --full
   ckyn evaluate [--full]
   ckyn run (--list | <exploit> [<args>...])
+  ckyn release
   ckyn <tool> [<args>...]
 
 %s
@@ -55,8 +56,7 @@ var BannerContainerTpl = BannerHeader + `
   ckyn run <exploit> [<args>...]             Run single exploit.
 
 %s
-  busybox [<args>...]                        Embedded busybox with common Unix utilities.
-  busybox --list                             List available busybox applets.
+  release                                    Release embedded busybox and exploit-passwd to current directory.
   kcurl <path> (get|post) <uri> [<data>]    Make request to K8s api-server.
   ectl <endpoint> get <key>                 Unauthorized enumeration of etcd keys.
   ucurl (get|post) <socket> <uri> <data>    Make request to docker unix socket.
