@@ -163,7 +163,7 @@ func (p taskAutoEscapeS) Desc() string {
 func (p taskAutoEscapeS) Exec() bool {
 	cmd := cli.Args["<cmd>"].(string)
 
-	log.Printf("%s\n", util.RedBold.Sprint("Caution: Flag auto-escape is deprecated as of Ckyn v1.5.1, and will be archived in v2.0. We recommend migrating to `./ckyn eva --full` and `./ckyn run`."))
+	log.Printf("%s\n", util.RedBold.Sprint("Caution: Flag auto-escape is deprecated as of Ckyn v1.5.1, and will be archived in v2.0. We recommend migrating to `./ckyn eva --profile=extended` and `./ckyn run`."))
 
 	if autoEscape(cmd) {
 		log.Println("all exploits are finished, auto exploit success!")

@@ -38,18 +38,17 @@ Lightweight container security assessment tool
 
 var BannerContainerTpl = BannerHeader + `
 %s
-  ckyn eva
-  ckyn eva --full
-  ckyn evaluate [--full]
+  ckyn evaluate [--profile=<name>]
+  ckyn eva [--profile=<name>]               (alias of evaluate)
   ckyn run (--list | <exploit> [<args>...])
   ckyn release
   ckyn <tool> [<args>...]
 
 %s
-  ckyn evaluate                              Gather information to find weakness inside container.
+  ckyn evaluate                              Run baseline evaluation (basic).
+  ckyn evaluate --profile=extended           Full evaluation with file scanning.
+  ckyn evaluate --profile=additional         Only extended-level checks.
   ckyn eva                                   Alias of "ckyn evaluate".
-  ckyn evaluate --full                       Enable file scan during information gathering.
-
 
 %s
   ckyn run --list                            List all available exploits.
@@ -65,7 +64,8 @@ var BannerContainerTpl = BannerHeader + `
 %s
   -h --help     Show this help msg.
   -v --version  Show version.
-  --profile=<name> Select evaluation profile (basic, extended, additional).
+  --profile=<name>  Select evaluation profile (basic, extended, additional).
+  --full            Shortcut for --profile=extended.
 `
 
 // BannerContainer is the banner of Ckyn command line with colorful.
