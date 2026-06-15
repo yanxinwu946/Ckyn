@@ -1,3 +1,6 @@
+//go:build linux && amd64
+// +build linux,amd64
+
 /*
 Copyright 2026 Ckyn Authors .
 
@@ -21,6 +24,7 @@ import (
 
 	"github.com/Yanxinwu946/Ckyn/pkg/evaluate"
 	"github.com/Yanxinwu946/Ckyn/pkg/plugin"
+	"github.com/Yanxinwu946/Ckyn/pkg/tool/busybox"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/dockerd_api"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/etcdctl"
 	"github.com/Yanxinwu946/Ckyn/pkg/tool/kubectl"
@@ -97,6 +101,25 @@ func ParseCkynMain() bool {
 			dockerd_api.UcurlToolApi(args)
 		case "dcurl":
 			dockerd_api.DcurlToolApi(args)
+		case "busybox":
+			// Extract and run busybox
+			defer busybox.Cleanup()
+			if len(args) == 0 {
+				// Show help
+				if err := busybox.Run("--help"); err != nil {
+					log.Printf("busybox error: %v\n", err)
+				}
+			} else if args[0] == "--list" {
+				// List applets
+				if err := busybox.ListApplets(); err != nil {
+					log.Printf("busybox error: %v\n", err)
+				}
+			} else {
+				// Run specific applet
+				if err := busybox.Run(args...); err != nil {
+					log.Printf("busybox error: %v\n", err)
+				}
+			}
 		case "probe":
 			if len(args) != 4 {
 				log.Println("Invalid input args.")
