@@ -23,10 +23,13 @@ A focused container security assessment tool for penetration testing and securit
 # Run specific exploit
 ./ckyn run <exploit-name> [<args>...]
 
-# Use embedded busybox
-./ckyn busybox ls -la
-./ckyn busybox ps aux
-./ckyn busybox --list
+# Release embedded binaries (busybox, exploit-passwd) to current directory
+./ckyn release
+
+# After release, use busybox directly
+./busybox ls -la
+./busybox ps aux
+./busybox --list
 ```
 
 ## Embedded Binaries
@@ -40,7 +43,7 @@ A focused container security assessment tool for penetration testing and securit
 
 | Tool | Command | Description |
 |------|---------|-------------|
-| busybox | `ckyn busybox [<args>...]` | Embedded busybox with 400+ Unix utilities |
+| release | `ckyn release` | Release embedded busybox and exploit-passwd to current directory |
 | kcurl | `ckyn kcurl <token> get\|post <url>` | Request K8s API Server |
 | ectl | `ckyn ectl <endpoint> get <key>` | Enumerate etcd keys |
 | ucurl | `ckyn ucurl get\|post <socket> <url>` | Request Docker Unix Socket |
