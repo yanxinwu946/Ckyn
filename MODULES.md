@@ -231,8 +231,7 @@
 
 | 工具 | 命令 | 说明 |
 |------|------|------|
-| busybox | `ckyn busybox [<args>...]` | 嵌入的静态 busybox，提供常用 Unix 工具 |
-| busybox | `ckyn busybox --list` | 列出所有可用的 busybox applet |
+| release | `ckyn release` | 释放嵌入的 busybox 和 exploit-passwd 到 ckyn 同级目录 |
 | kubectl | `ckyn kcurl <token> (get\|post) <url> [<data>]` | 请求 K8s API Server |
 | etcdctl | `ckyn ectl <endpoint> get <key>` | 枚举 etcd 键 |
 | dockerd_api | `ckyn ucurl (get\|post) <socket> <url> <data>` | 请求 Docker Unix Socket |
@@ -276,13 +275,15 @@
 # 运行 exploit
 ./ckyn run <exploit-name> [<args>...]
 
-# Busybox 工具
-./ckyn busybox --help        # 显示帮助
-./ckyn busybox --list        # 列出所有 applet
-./ckyn busybox ls -la        # 运行 ls 命令
-./ckyn busybox ps aux        # 运行 ps 命令
-./ckyn busybox netstat -tlnp # 运行 netstat 命令
-./ckyn busybox wget <url>    # 运行 wget 命令
+# 释放嵌入二进制
+./ckyn release               # 释放 busybox 和 exploit-passwd 到当前目录
+
+# 释放后使用 busybox
+./busybox --list             # 列出所有 applet
+./busybox ls -la             # 运行 ls 命令
+./busybox ps aux             # 运行 ps 命令
+./busybox netstat -tlnp      # 运行 netstat 命令
+./busybox wget <url>         # 运行 wget 命令
 
 # K8s/Docker 工具
 ./ckyn kcurl <token> get <url>
